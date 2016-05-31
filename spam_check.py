@@ -10,8 +10,9 @@ v1.1
 import csv
 import re
 import time
+import threading
 from nltk.corpus import names
-from util import StrDist, is_jiberish, select_input_file
+from util import StrDist, is_jiberish, select_input_file, spin, Signal
 from numpy.core.multiarray import ITEM_HASOBJECT
 
 
@@ -114,7 +115,11 @@ def spam_rating(col_dicts):
 
 def save_to_csv(col_dicts, fname):
     counter = 0
+    signal = Signal()
+    spinner = threading.Thread(target=spin, args=('processing csv file', signal))
     
+    spinner.start()
+                               
     with open(fname, "wb") as outfile:
         csvwriter = csv.writer(outfile)
         '''write the header, get the 1st item, extract the keys'''
@@ -134,6 +139,8 @@ def save_to_csv(col_dicts, fname):
                 
             csvwriter.writerow(line)
             counter += 1
+    signal.go = False
+    spinner.join()
     return counter                      
 def main():
     

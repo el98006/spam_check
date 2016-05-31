@@ -6,7 +6,10 @@ Created on Apr 22, 2016
 
 import math
 import re
-
+import threading
+import itertools
+import sys
+import time
 
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
@@ -69,3 +72,22 @@ class StrDist:
             return self.points / len(self.target)
         else:
             return 0
+''' Signal used to communicate to the thread and stop the thread'''
+       
+class Signal: 
+    go = True
+    
+
+def spin(msg, signal):
+    write, flush = sys.stdout.write, sys.stdout.flush 
+    for char in itertools.cycle('|/-\\'):
+        status = char + ' ' + msg
+        write(status)
+        flush()
+        ''' flush() to refresh the screen
+        '''
+        write('\x00' * len(status))
+        time.sleep(.1)
+        if not signal.go:
+            break
+    write(' ' * len(status) + '\x00' * len(status))
