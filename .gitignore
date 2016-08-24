@@ -64,3 +64,5 @@ target/
 #poject files
 .project
 .pydevproject
+
+*.txt

@@ -2,7 +2,6 @@
 
 import pickle
 import gib_detect_train
-import csv
 import os
 from gib_detect_train import DATA_DIR
 
